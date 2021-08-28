@@ -35,4 +35,35 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
 });
 
+//organizaciones
+$router->group(['prefix' => 'organizations'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'OrganizationController@getOne']);
+    $router->get('all', ['uses' => 'OrganizationController@getAll']);
+    $router->post('new', ['uses' => 'OrganizationController@create']);
+    $router->delete('delete/{id}', ['uses' => 'OrganizationController@delete']);
+    $router->put('update', ['uses' => 'OrganizationController@update']);
+    
+});
+
+//perfiles
+$router->group(['prefix' => 'profiles'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'ProfilesController@getOne']);
+    $router->get('all', ['uses' => 'ProfilesController@getAll']);
+    $router->post('new', ['uses' => 'ProfilesController@create']);
+    $router->delete('delete/{id}', ['uses' => 'ProfilesController@delete']);
+    $router->put('update', ['uses' => 'ProfilesController@update']); 
+});
+
+//herramientas
+$router->group(['prefix' => 'tools'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'ToolsController@getOne']);
+    $router->get('all', ['uses' => 'ToolsController@getAll']);
+    $router->post('new', ['uses' => 'ToolsController@create']);
+    $router->delete('delete/{id}', ['uses' => 'ToolsController@delete']);
+    $router->put('update', ['uses' => 'ToolsController@update']); 
+});
+
 
