@@ -35,4 +35,49 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
 });
 
+//organizaciones
+$router->group(['prefix' => 'organizations'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'OrganizationController@getOne']);
+    $router->get('all', ['uses' => 'OrganizationController@getAll']);
+    $router->post('new', ['uses' => 'OrganizationController@create']);
+    $router->delete('delete/{id}', ['uses' => 'OrganizationController@delete']);
+    $router->put('update', ['uses' => 'OrganizationController@update']);
+    
+});
+
+//perfiles
+$router->group(['prefix' => 'profiles'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'ProfilesController@getOne']);
+    $router->get('all', ['uses' => 'ProfilesController@getAll']);
+    $router->post('new', ['uses' => 'ProfilesController@create']);
+    $router->delete('delete/{id}', ['uses' => 'ProfilesController@delete']);
+    $router->put('update', ['uses' => 'ProfilesController@update']); 
+    // aqui tengo que agregar herramientas al perfil
+    $router->post('add-tools', ['uses' => 'ProfilesController@addTools']);
+});
+
+//herramientas
+$router->group(['prefix' => 'tools'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'ToolsController@getOne']);
+    $router->get('all', ['uses' => 'ToolsController@getAll']);
+    $router->post('new', ['uses' => 'ToolsController@create']);
+    $router->delete('delete/{id}', ['uses' => 'ToolsController@delete']);
+    $router->put('update', ['uses' => 'ToolsController@update']); 
+});
+
+//usuarios del sistema
+$router->group(['prefix' => 'users'], function () use ($router) {
+    // Matches "/api/register   
+    $router->get('get/{id}', ['uses' => 'UsersController@getOne']);
+    $router->get('all', ['uses' => 'UsersController@getAll']);
+    $router->post('new', ['uses' => 'UsersController@create']);
+    $router->delete('delete/{id}', ['uses' => 'UsersController@delete']);
+    $router->put('update', ['uses' => 'UsersController@update']); 
+    // asignar perfil de usuario
+    $router->post('add-profile', ['uses' => 'UsersController@addProfile']);
+    $router->post('add-tool', ['uses' => 'UsersController@addTool']);
+});
 
