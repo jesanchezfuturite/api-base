@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\ProfilesRepositoryEloquent;
+use App\Repositories\ProfilestoolsRepositoryEloquent;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProfilesController extends Controller
 {
@@ -15,6 +17,7 @@ class ProfilesController extends Controller
      */
 
     protected $profile;
+    protected $profileTool;
 
     /**
      * 
@@ -25,12 +28,15 @@ class ProfilesController extends Controller
      */
 
     public function __construct(
-        ProfilesRepositoryEloquent $profile
+        ProfilesRepositoryEloquent $profile,
+        ProfilestoolsRepositoryEloquent $profileTool
     )
     {    
         $this->middleware('auth');
 
         $this->profile = $profile;
+
+        $this->profileTool = $profileTool;
     }
 
 
@@ -226,6 +232,95 @@ class ProfilesController extends Controller
             return response()->json(
                 [
                     "code"      => 555,
+                    "message"   => $e->getmessage()
+                ],200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE
+            );
+        }
+    }
+
+    /**
+     * 
+     * addTools() agregar herramientas a un perfil la insercion de estos datos es en profiles tools
+     *  se pueden recibir n perfiles y n herramientas e insertaremos todas las combinaciones de los dos 
+     *  arreglos json
+     * 
+     * @param profilesid_array, toolsid_array
+     * 
+     * @return mensaje codigo 200
+     *
+     * 
+     */
+
+    public function addTools(Request $request)
+    {
+        try
+        {
+            $profiles       = $request->profiles;   
+            $tools          = $request->tools;   
+            $organization   = $request->organization;  
+
+            Log::info("Profiles type " . gettype($profiles));
+            if(is_array($profiles))
+            {
+                if(is_array($tools))
+                {
+
+                    foreach($profiles as $p)
+                    {
+                        foreach($tools as $t)
+                        {
+                            try
+                            {
+                                $this->profileTool->updateOrCreate(
+                                    [
+                                        'profiles_id'       => $p,
+                                        'tools_id'          => $t,
+                                        'organization_id'   => $organization,
+                                    ],
+                                    [
+                                        'profiles_id'       => $p,
+                                        'tools_id'          => $t,
+                                        'organization_id'   => $organization,
+                                    ]
+                                );
+                                return response()->json(
+                                    [
+                                        "code"      => 200,
+                                        "message"   => "Herramientas se agregaron correctamente al perfil"
+                                    ],200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE
+                                ); 
+                            }catch(\Exception $e){
+                                return response()->json(
+                                    [
+                                        "code"      => 559,
+                                        "message"   => $e->getmessage()
+                                    ],200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE
+                                );    
+                            }
+                        }
+                    }
+
+                }else{
+                    return response()->json(
+                        [
+                            "code"      => 557,
+                            "message"   => "El API espera recibir el parametro tools como arreglo"
+                        ],200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE
+                    );  
+                }
+            }else{
+                return response()->json(
+                    [
+                        "code"      => 558,
+                        "message"   => "El API espera recibir el parametro profiles como arreglo"
+                    ],200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE
+                );
+            }
+
+        }catch(\Exception $e){
+            return response()->json(
+                [
+                    "code"      => 556,
                     "message"   => $e->getmessage()
                 ],200,['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE
             );
